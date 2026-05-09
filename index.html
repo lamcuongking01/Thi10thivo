@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thi Đỗ Vào 10 - Hệ Thống Luyện Đề</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --math: #e74c3c;
+            --lit: #27ae60;
+            --eng: #2980b9;
+            --bg: #f8f9fa;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; color: #333; }
+        
+        /* Header & Sticky Timer */
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        #timer { font-size: 1.5rem; font-weight: bold; color: #f1c40f; margin-top: 5px; }
+
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+
+        /* Màn hình chọn môn */
+        .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { 
+            background: white; border-radius: 20px; padding: 30px; text-align: center; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
+
+        /* Khu vực làm bài */
+        .exam-page { display: none; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .question { margin-bottom: 30px; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+        .question-title { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        
+        label { display: block; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        label:hover { background: #f0f0f0; }
+
+        /* Kết quả & Giải thích */
+        .feedback { display: none; margin-top: 15px; padding: 15px; border-radius: 8px; font-size: 0.95rem; line-height: 1.6; }
+        .correct-ans { background: #e8f5e9; border-left: 5px solid #2e7d32; color: #1b5e20; }
+        .wrong-ans { background: #ffebee; border-left: 5px solid #c62828; color: #b71c1c; }
+
+        .btn { border: none; padding: 12px 25px; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .btn-home { background: #7f8c8d; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>THI ĐỖ VÀO 10</h1>
+    <div id="timer">Thời gian: 60:00</div>
+</header>
+
+<div class="container">
+    <div id="home-page" class="subject-grid">
+        <div class="card" onclick="startExam('Toán', 'math')">
+            <span class="icon">📕</span>
+            <h3 style="color: var(--math)">MÔN TOÁN</h3>
+            <p>Hệ thức lượng, Hình tròn, Vi-ét...</p>
+        </div>
+        <div class="card" onclick="startExam('Ngữ Văn', 'lit')">
+            <span class="icon">📗</span>
+            <h3 style="color: var(--lit)">NGỮ VĂN</h3>
+            <p>Tác giả, Tác phẩm, Tiếng Việt...</p>
+        </div>
+        <div class="card" onclick="startExam('Tiếng Anh', 'eng')">
+            <span class="icon">📘</span>
+            <h3 style="color: var(--eng)">TIẾNG ANH</h3>
+            <p>Ngữ pháp, Reading, Trọng âm...</p>
+        </div>
+    </div>
+
+    <div id="exam-page" class="exam-page">
+        <h2 id="subject-title">Tên môn học</h2>
+        
+        <div id="questions-container">
+            </div>
+
+        <button class="btn" style="background: var(--primary)" onclick="finishExam()">Nộp bài & Xem phân tích</button>
+        <button class="btn btn-home" onclick="goHome()">Quay lại trang chủ</button>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 3600; // 60 phút
+    let timerInterval;
+
+    const data = {
+        math: [
+            { q: "Câu 1: Giá trị của √25 là:", a: "5", b: "-5", c: "±5", correct: "a", why: "Căn bậc hai số học của một số không âm luôn là số không âm. 5² = 25." },
+            { q: "Câu 2: Hệ thức nào đúng trong tam giác vuông?", a: "h² = b.c", b: "h² = b'.c'", c: "a² = b² - c²", correct: "b", why: "Theo hệ thức lượng: Bình phương đường cao bằng tích hai hình chiếu." }
+        ],
+        lit: [
+            { q: "Câu 1: Nhân vật ông Hai trong truyện ngắn Làng yêu cái gì nhất?", a: "Cái nhà", b: "Làng Chợ Dầu", c: "Cái vườn", correct: "b", why: "Yêu làng thống nhất với yêu nước là chủ đề chính của tác phẩm." }
+        ]
+    };
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 3600;
+        timerInterval = setInterval(() => {
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            document.getElementById('timer').innerHTML = `Thời gian: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if (timeLeft <= 0) { clearInterval(timerInterval); finishExam(); }
+            timeLeft--;
+        }, 1000);
+    }
+
+    function startExam(name, key) {
+        document.getElementById('home-page').style.display = 'none';
+        document.getElementById('exam-page').style.display = 'block';
+        document.getElementById('subject-title').innerText = "Đề ôn tập " + name;
+        
+        let container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        
+        if (!data[key]) {
+            container.innerHTML = "<p>Dữ liệu đang được cập nhật...</p>";
+            return;
+        }
+
+        data[key].forEach((item, index) => {
+            container.innerHTML += `
+                <div class="question" id="q${index}">
+                    <div class="question-title">${item.q}</div>
+                    <label><input type="radio" name="ans${index}" value="a"> ${item.a}</label>
+                    <label><input type="radio" name="ans${index}" value="b"> ${item.b}</label>
+                    <label><input type="radio" name="ans${index}" value="c"> ${item.c}</label>
+                    <div class="feedback" id="fb${index}"></div>
+                </div>
+            `;
+        });
+        startTimer();
+    }
+
+    function finishExam() {
+        clearInterval(timerInterval);
+        let currentSubject = document.getElementById('subject-title').innerText.includes("Toán") ? "math" : "lit";
+        
+        data[currentSubject].forEach((item, index) => {
+            let selected = document.querySelector(`input[name="ans${index}"]:checked`);
+            let fb = document.getElementById(`fb${index}`);
+            fb.style.display = "block";
+            
+            if (selected && selected.value === item.correct) {
+                fb.className = "feedback correct-ans";
+                fb.innerHTML = `<b>Đúng!</b> ${item.why}`;
+            } else {
+                fb.className = "feedback wrong-ans";
+                fb.innerHTML = `<b>Sai rồi!</b> Đáp án đúng là ${item.correct.toUpperCase()}. <br> <i>Phân tích:</i> ${item.why}`;
+            }
+        });
+        window.scrollTo(0, 0);
+    }
+
+    function goHome() {
+        document.getElementById('home-page').style.display = 'grid';
+        document.getElementById('exam-page').style.display = 'none';
+        clearInterval(timerInterval);
+        document.getElementById('timer').innerHTML = "Thời gian: 60:00";
+    }
+</script>
+
+</body>
+</html>
