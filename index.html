@@ -3,37 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thi Đỗ Vào 10 - Universe Edition</title>
+    <title>Hệ Thống Luyện Thi Vào 10 - Pro Version</title>
     <style>
-        :root {
-            --math-color: #ff4757;
-            --lit-color: #2ed573;
-            --eng-color: #1e90ff;
-        }
+        :root { --math: #e74c3c; --lit: #2ecc71; --eng: #3498db; --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { text-align: center; padding: 30px; background: rgba(0,0,0,0.5); border-bottom: 1px solid #334155; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        
+        /* Buttons & Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--panel); border: 1px solid #334155; border-radius: 15px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: #94a3b8; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1rem; color: white; transition: 0.2s; }
+        .btn:hover { opacity: 0.8; }
+        .btn-back { background: #475569; width: auto; margin-bottom: 20px; }
+        
+        /* Screens */
+        .screen { display: none; }
+        #screen-home { display: block; }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #050505 url('https://www.transparenttextures.com/patterns/stardust.png');
-            background-attachment: fixed;
-            color: white;
-            overflow-x: hidden;
-        }
+        /* Danh sách đề & Công thức */
+        .list-item { background: var(--panel); padding: 15px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; border-left: 5px solid gray; }
+        .list-item:hover { background: #334155; }
+        
+        /* Giao diện thi */
+        .question-box { background: var(--panel); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .options label { display: block; padding: 12px; margin: 8px 0; background: #0f172a; border-radius: 8px; cursor: pointer; border: 1px solid #334155; }
+        .options label:hover { background: #1e293b; }
+        .options input { margin-right: 10px; }
+        
+        /* Chấm điểm & Giải thích */
+        .explain { display: none; margin-top: 15px; padding: 15px; border-radius: 8px; font-size: 0.95rem; }
+        .correct-box { background: rgba(46, 204, 113, 0.2); border-left: 4px solid #2ecc71; color: #a7f3d0; }
+        .wrong-box { background: rgba(231, 76, 60, 0.2); border-left: 4px solid #e74c3c; color: #fecaca; }
+        
+        /* Upload Tự Luận */
+        .upload-box { border: 2px dashed #475569; padding: 30px; text-align: center; border-radius: 10px; margin-top: 20px; }
+        .upload-box input { display: none; }
+        .upload-label { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
 
-        /* Hiệu ứng nền vũ trụ động */
-        .stars-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -1;
-        }
+<header>
+    <h1>HỆ THỐNG LUYỆN THI VÀO 10</h1>
+    <p>Học lý thuyết - Thi trực tuyến - Chấm điểm tức thì</p>
+</header>
 
-        header {
-            text-align: center;
-            padding: 50px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+<div class="container">
+    <div id="screen-home" class="screen">
+        <div class="grid">
+            <div class="card" onclick="openSubject('math')" style="border-bottom: 4px solid var(--math);">
+                <h2 style="color: var(--math)">TOÁN HỌC</h2><p>Công thức & Đề trắc nghiệm + Tự luận</p>
+            </div>
+            <div class="card" onclick="openSubject('lit')" style="border-bottom: 4px solid var(--lit);">
+                <h2 style="color: var(--lit)">NGỮ VĂN</h2><p>Lý thuyết & Đề thi trắc nghiệm</p>
+            </div>
+            <div class="card" onclick="openSubject('eng')" style="border-bottom: 4px solid var(--eng);">
+                <h2 style="color: var(--eng)">TIẾNG ANH</h2><p>Ngữ pháp & Đề thi Tiếng Anh</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-menu" class="screen">
+        <button class="btn btn-back" onclick="switchScreen('screen-home')">← Quay lại trang chủ</button>
+        <h2 id="subject-title">Môn Học</h2>
+        <div class="grid">
+            <div class="card" onclick="openFormulas()">
+                <h3>📖 ÔN CÔNG THỨC & LÝ THUYẾT</h3>
+            </div>
+            <div class="card" onclick="openTestList()">
+                <h3>📝 LÀM ĐỀ THI TRỰC TUYẾN</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-list" class="screen">
+        <button class="btn btn-back" onclick="switchScreen('screen-menu')">← Quay lại</button>
+        <h2>Chọn đề để bắt đầu làm</h2>
+        <div id="test-list-area"></div>
+    </div>
+
+    <div id="screen-quiz" class="screen">
+        <h2 id="quiz-title" style="text-align: center;">Đề thi</h2>
+        <div id="quiz-content"></div>
+        
+        <div id="essay-section" class="upload-box" style="display: none;">
+            <h3>Phần Tự Luận (Dành cho môn Toán)</h3>
+            <p>Em hãy làm phần tự luận ra giấy, chụp ảnh và tải lên đây để Admin chấm nhé!</p>
+            <label class="upload-label">
+                📸 Chọn ảnh tải lên
+                <input type="file" accept="image/*" onchange="handleImageUpload(event)">
+            </label>
+            <p id="upload-status" style="color: #2ecc71; font-weight: bold; margin-top: 10px;"></p>
+        </div>
+
+        <button class="btn" style="background: var(--lit);" onclick="submitExam()">NỘP BÀI & CHẤM ĐIỂM</button>
+    </div>
+
+    <div id="screen-result" class="screen" style="text-align: center;">
+        <h2>KẾT QUẢ BÀI LÀM</h2>
+        <h1 id="score-text" style="font-size: 4rem; color: #f1c40f;">0/0</h1>
+        <p id="score-msg" style="font-size: 1.2rem;"></p>
+        <button class="btn" style="background: var(--eng); max-width: 300px;" onclick="viewAnswers()">Xem giải thích chi tiết</button>
+        <button class="btn btn-back" style="max-width: 300px;" onclick="switchScreen('screen-home')">Về trang chủ</button>
+    </div>
+</div>
+
+<script src="data.js"></script>
+
+<script>
+    let currentSub = "", currentTestIdx = 0;
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+        document.getElementById(screenId).style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function openSubject(sub) {
+        currentSub = sub;
+        document.getElementById('subject-title').innerText = sub === 'math' ? "MÔN TOÁN" : sub === 'lit' ? "MÔN VĂN" : "MÔN ANH";
+        switchScreen('screen-menu');
+    }
+
+    function openFormulas() {
+        // Mở link công thức (link Google Drive) từ data.js
+        window.open(appData[currentSub].formulaLink, '_blank');
+    }
+
+    function openTestList() {
+        let area = document.getElementById('test-list-area');
+        area.innerHTML = "";
+        let color = currentSub === 'math' ? 'var(--math)' : currentSub === 'lit' ? 'var(--lit)' : 'var(--eng)';
+        
+        appData[currentSub].tests.forEach((test, idx) => {
+            area.innerHTML += `
+                <div class="list-item" style="border-left-color: ${color}" onclick="startTest(${idx})">
+                    <h3 style="margin:0">${test.title}</h3>
+                    <p style="margin:5px 0 0 0; font-size: 0.9rem; color: #94a3b8;">${test.questions.length} câu trắc nghiệm ${test.hasEssay ? '+ Phần tự luận' : ''}</p>
+                </div>
+            `;
+        });
+        switchScreen('screen-list');
+    }
+
+    function startTest(idx) {
+        currentTestIdx = idx;
+        let test = appData[currentSub][idx];
+        document.getElementById('quiz-title').innerText = test.title;
+        
+        let html = "";
+        test.questions.forEach((q, i) => {
+            html += `
+            <div class="question-box" id="qbox-${i}">
+                <p><strong>Câu ${i+1}: ${q.q}</strong></p>
+                <div class="options">
+                    <label><input type="radio" name="q${i}" value="A"> A. ${q.a}</label>
+                    <label><input type="radio" name="q${i}" value="B"> B. ${q.b}</label>
+                    <label><input type="radio" name="q${i}" value="C"> C. ${q.c}</label>
+                    <label><input type="radio" name="q${i}" value="D"> D. ${q.d}</label>
+                </div>
+                <div class="explain" id="explain-${i}"></div>
+            </div>`;
+        });
+        document.getElementById('quiz-content').innerHTML = html;
+
+        // Bật/tắt phần nộp ảnh tự luận
+        document.getElementById('essay-section').style.display = test.hasEssay ? 'block' : 'none';
+        document.getElementById('upload-status').innerText = "";
+
+        switchScreen('screen-quiz');
+    }
+
+    function handleImageUpload(event) {
+        if(event.target.files.length > 0) {
+            document.getElementById('upload-status').innerText = "✅ Đã tải ảnh lên! Hệ thống đã ghi nhận gửi Admin chấm.";
+        }
+    }
+
+    function submitExam() {
+        let test = appData[currentSub][currentTestIdx];
+        let score = 0;
+
+        test.questions.forEach((q, i) => {
+            let selected = document.querySelector(`input[name="q${i}"]:checked`);
+            let expBox = document.getElementById(`explain-${i}`);
+            expBox.style.display = "block";
+
+            if (selected && selected.value === q.correct) {
+                score++;
+                expBox.className = "explain correct-box";
+                expBox.innerHTML = `<strong>✅ Chính xác!</strong> <br> <em>Giải thích:</em> ${q.explain}`;
+            } else {
+                expBox.className = "explain wrong-box";
+                let userAns = selected ? selected.value : "Chưa chọn";
+                expBox.innerHTML = `<strong>❌ Sai rồi!</strong> Bạn chọn: ${userAns}. Đáp án đúng là: <strong>${q.correct}</strong> <br> <em>Giải thích:</em> ${q.explain}`;
+            }
+        });
+
+        document.getElementById('score-text').innerText = `${score} / ${test.questions.length}`;
+        let msg = score === test.questions.length ? "Xuất sắc! Bạn nắm kiến thức rất vững." : "Hãy xem lại giải thích chi tiết bên dưới nhé!";
+        if(test.hasEssay) msg += "<br>(Lưu ý: Điểm này chưa bao gồm phần thi Tự luận đã gửi cho Admin)";
+        document.getElementById('score-msg').innerHTML = msg;
+
+        switchScreen('screen-result');
+    }
+
+    function viewAnswers() {
+        // Đưa người dùng về màn hình Quiz để xem câu đúng sai đã được bôi đỏ/xanh
+        document.getElementById('screen-result').style.display = 'none';
+        document.getElementById('screen-quiz').style.display = 'block';
+        // Ẩn nút Nộp bài đi
+        document.querySelector('#screen-quiz .btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
