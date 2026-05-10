@@ -3,37 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thi Đỗ Vào 10 - Kho Đề Thi PDF</title>
+    <title>Thi Đỗ Vào 10 - Universe Edition</title>
     <style>
-        :root { --primary: #2c3e50; --math: #e74c3c; --lit: #27ae60; --eng: #2980b9; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; }
-        header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
-        
-        /* Bảng danh sách đề */
-        .file-list { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #eee; padding: 15px; text-align: left; }
-        td { padding: 15px; border-top: 1px solid #eee; }
-        
-        .tag { padding: 5px 10px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; }
-        .btn-download { background: #3498db; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; }
-        .btn-download:hover { background: #2980b9; }
+        :root {
+            --math-color: #ff4757;
+            --lit-color: #2ed573;
+            --eng-color: #1e90ff;
+        }
 
-        /* Vùng dành cho Admin */
-        .admin-note { background: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #050505 url('https://www.transparenttextures.com/patterns/stardust.png');
+            background-attachment: fixed;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Hiệu ứng nền vũ trụ động */
+        .stars-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -1;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #adbac7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        /* Grid môn học */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .subject-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .icon { font-size: 70px; display: block; margin-bottom: 20px; }
+
+        /* Popup thư mục bên trong */
+        .folder-menu {
+            display: none;
+            margin-top: 20px;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .folder-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #ddd;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s;
+        }
+
+        .folder-item:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer { text-align: center; padding: 40px; color: #555; }
     </style>
 </head>
 <body>
 
+<div class="stars-container"></div>
+
 <header>
-    <h1>THI ĐỖ VÀO 10 - KHO TỆP ĐỀ THI</h1>
-    <p>Tải đề - Làm bài - Xem đáp án phân tích</p>
+    <h1>CHINH PHỤC VŨ TRỤ 10</h1>
+    <p style="color: #888;">Hệ thống tài liệu & Luyện đề dành riêng cho Admin LamCuongKing</p>
 </header>
 
 <div class="container">
-    <div class="admin-note">
-        <strong>Dành cho Admin:</strong> Để thêm đề mới, bạn chỉ cần tải file lên GitHub và thêm 1 dòng tên file vào code. Rất nhanh!
+    <div class="subject-grid">
+        
+        <div class="subject-card" onclick="toggleFolder('math')">
+            <span class="icon">🚀</span>
+            <h2 style="color: var(--math-color)">TOÁN HỌC</h2>
+            <p>Hình học & Đại số</p>
+            <div id="folder-math" class="folder-menu">
+                <a href="LINK_CONG_THUC_TOAN" class="folder-item">📚 Công thức trọng tâm</a>
+                <a href="LINK_DE_THI_TOAN" class="folder-item">📑 Kho đề thi PDF</a>
+                <a href="javascript:void(0)" onclick="alert('Tính năng trắc nghiệm đang phát triển!')" class="folder-item">✍️ Luyện tập ngay</a>
+            </div>
+        </div>
+
+        <div class="subject-card" onclick="toggleFolder('lit')">
+            <span class="icon">🪐</span>
+            <h2 style="color: var(--lit-color)">NGỮ VĂN</h2>
+            <p>Tác phẩm & Nghị luận</p>
+            <div id="folder-lit" class="folder-menu">
+                <a href="LINK_SO_DO_TU_DUY_VAN" class="folder-item">🗺️ Sơ đồ tư duy</a>
+                <a href="LINK_DE_VAN" class="folder-item">📑 Kho đề thi PDF</a>
+                <a href="javascript:void(0)" class="folder-item">✍️ Luyện viết đoạn</a>
+            </div>
+        </div>
+
+        <div class="subject-card" onclick="toggleFolder('eng')">
+            <span class="icon">🛸</span>
+            <h2 style="color: var(--eng-color)">TIẾNG ANH</h2>
+            <p>Grammar & Reading</p>
+            <div id="folder-eng" class="folder-menu">
+                <a href="LINK_NGU_PHAP_ANH" class="folder-item">📖 Cấu trúc ngữ pháp</a>
+                <a href="LINK_DE_ANH" class="folder-item">📑 Kho đề thi PDF</a>
+                <a href="javascript:void(0)" class="folder-item">✍️ Test trắc nghiệm</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="footer">
+    © 2026 Space Exam System | Powered by LamCuongKing
+</div>
+
+<script>
+    function toggleFolder(subject) {
+        // Đóng các folder khác
+        document.querySelectorAll('.folder-menu').forEach(menu => {
+            if(menu.id !== 'folder-' + subject) menu.style.display = 'none';
+        });
+
+        // Mở/Đóng folder hiện tại
+        const folder = document.getElementById('folder-' + subject);
+        if (folder.style.display === 'grid') {
+            folder.style.display = 'none';
+        } else {
+            folder.style.display = 'grid';
+        }
+    }
+</script>
+
+</body>
+</html>
     </div>
 
     <div class="file-list">
